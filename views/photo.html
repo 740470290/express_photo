@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/css/bootstrap.min.css">
+    <style>
+        .item {
+            width: 80px;
+            height: 50px;
+            border: 1px solid #ccc;
+            float: left;
+            cursor: pointer;
+            text-align: center;
+            line-height: 50px;
+            margin: 10px;
+            color: #333;
+            background-color: #fff;
+            font-size: 14px;
+            font-weight: 400;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+        img{
+            width: 240px;
+            height: 135px;
+        }
+        .box{
+            height: 80px;
+        }
+        .dir{
+            width: 240px;
+            text-align: center;
+            float: left;
+            display: block;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+<div class="box">
+    <a href="/"><div class="item">返回首页</div></a>
+</div>
+{{each files file index}}
+    <div class="dir">
+        <img src="../uploads/{{dirName}}/{{file}}" alt="">
+    <span>{{file}}</span><br>
+        <a href="/del/{{dirName}}/{{file}}">删除</a>
+    </div>
+{{/each}}
+</div>
+</body>
+</html>
