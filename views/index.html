@@ -68,16 +68,17 @@
 {{/each}}
 </div>
 <div class="upload">
-    <form action="/upload" enctype="multipart/form-data" method="post">
+    <form action="/upload" onsubmit="return check()" enctype="multipart/form-data" method="post">
     <select class="form-control" name="dirList">
         {{each files file index}}
       <option value={{file}}>{{file}}</option>
         {{/each}}
     </select><br>
     <div class="custom-file">
-    <input type="file" name="upload" multiple="multiple" class="custom-file-input" id="customFile">
+    <input type="file" accept="image/*" name="upload" multiple="multiple" class="custom-file-input" id="customFile">
     <label class="custom-file-label" for="customFile">Choose file</label>
 </div><br><br>
+    <p class="choose">未选择任何文件</p>
     <input class="btn btn-success" type="submit" value="上传">
     </form>
 </div>
@@ -91,18 +92,43 @@
     </div>
 <script>
     const items = document.querySelectorAll('.item');
+    const file = document.querySelector('#customFile');
+    const choose = document.querySelector('.choose');
     const arr=['.all','.upload','.new'];
+    let list=[];
+    items[0].style.background='#ddd';
     for(let i=0;i<3;i++){
         items[i].onclick=function () {
             items.forEach((k)=>{
                 k.style.background='#fff'
             });
-            this.style.background='#ccc';
+            this.style.background='#ddd';
             arr.forEach((j)=>{
                 document.querySelector(j).style.display='none'
             });
             document.querySelector(arr[i]).style.display='block'
         }
+    }
+    file.onchange=function () {
+        if(file.files[0]){
+            list.length=0;
+            for(let i of file.files){
+                list.push(i.name)
+            }
+            choose.innerHTML=list;
+        }else{
+            choose.innerHTML='未选择任何文件';
+        }
+    }
+    function check() {
+        const re=/(jpg|png|gif|bmp|jpeg|ico)/i;
+        for(i of list){
+            if(!re.test(i)){
+                choose.innerHTML='包含非图片文件,请重新选择';
+                return false
+            }
+        }
+        return true
     }
 </script>
 </body>

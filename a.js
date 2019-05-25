@@ -1,6 +1,3 @@
-//删除文件夹
-//删除文件
-//拦截非图片文件
 const fs = require('fs');
 const formidable = require('formidable');
 const util = require('util');
@@ -50,27 +47,31 @@ app.post('/newDir',function (req,res) {
 });
 app.post('/upload',function (req,res) {
     var form = new formidable.IncomingForm();
-    console.log(req);
     form.uploadDir='./';
+    //保留文件的后缀名
+    form.keepExtensions = true;
+    let allFiles = [];
+    form.on('file', function (filed, file) {
+        allFiles.push([filed, file]);
+        console.log(allFiles);
+    });
+
     form.parse(req, function(err, fields, files) {
       // res.writeHead(200, {'content-type': 'text/plain'});
       // res.write('received upload:\n\n');
       // res.end(util.inspect({fields: fields, files: files}));
-        const oldPath=files.upload.path;//'uploads\\upload_eaf3aae723a63fa69532ded31e6dd10f'
-        const name=files.upload.name.toLowerCase();//'寰俊鎴浘_20190328145925.png'
-        const re=/(jpg|png|gif|bmp|jpeg)/;
-        if(re.test(name)){
-            const last=name.slice(name.indexOf('.'));
-            const na= (new Date()).toLocaleString().replace(/[- :]/g,'');//'寰俊鎴浘_20190328145925.png'
-            const dir=fields.dirList;
-            fs.rename(oldPath,'./uploads/'+dir+'/'+na+last,function (err) {
-                console.log(err)
-            })
-            res.redirect('/show?dirName='+dir);
-        }else{
-            res.send('非图片文件,请重新上传<a href="/">返回</a>')
-            fs.unlink(oldPath,err=>console.log(err))
-        }
+      //   console.log(util.inspect({fields: fields, files: files}));
+    const dir=fields.dirList;
+      for(i of allFiles){
+        const oldPath=i[1].path;//'uploads\\upload_eaf3aae723a63fa69532ded31e6dd10f'
+        const last=oldPath.slice(oldPath.lastIndexOf('.'));
+        const na= (new Date()).toLocaleString().replace(/[- :]/g,'');//'寰俊鎴浘_20190328145925.png'
+        const random=Math.random().toString().slice(2,5);
+          fs.rename(oldPath,'./uploads/'+dir+'/'+na+random+last,function (err) {
+            console.log(err)
+        })
+      }
+      res.redirect('/show?dirName='+dir);
     });
 });
 
